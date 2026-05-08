@@ -133,13 +133,13 @@ class VirtualDisplayResponder(plugins.Responder):
             return None, None, None, None, None
 
         extraArgs = plugins.splitcmd(app.getConfigValue("virtual_display_extra_args"))
-        xvfbCmd = self.getRemoteCmd(machine, app, "startXvfb.pyx", extraArgs)
+        xvfbCmd = self.getRemoteCmd(machine, app, "startXvfb.py.in", extraArgs)
         displayName, xvfbPid, xvfbOrSshProc = self.startXvfb(xvfbCmd, machine)
 
         wmPid, wmOrSshProc = None, None
         if wmExecutable:
             extraArgs = [wmExecutable, displayName]
-            wmArgs = self.getRemoteCmd(machine, app, "startWindowManager.pyx", extraArgs)
+            wmArgs = self.getRemoteCmd(machine, app, "startWindowManager.py.in", extraArgs)
             wmPid, wmOrSshProc = self.startWindowManager(wmArgs, machine)
         return displayName, xvfbPid, xvfbOrSshProc, wmPid, wmOrSshProc
 
@@ -188,7 +188,7 @@ class VirtualDisplayResponder(plugins.Responder):
         if appTmpDir:
             logDir = os.path.join(appTmpDir, "Xvfb")
             app.ensureRemoteDirExists(machine, logDir)
-            remotePath = os.path.join(appTmpDir, pythonScript.replace(".pyx", ".py"))
+            remotePath = os.path.join(appTmpDir, pythonScript.replace(".py.in", ".py"))
             app.copyFileRemotely(localPath, "localhost", remotePath, machine)
             fullPath = remotePath
             pythonArgs = ["python", "-u"]
